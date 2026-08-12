@@ -1,0 +1,485 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Ledger — Closure Bank Accounts</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,600;9..144,700&family=Inter:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --ink:#16241d;
+    --paper:#f4efe2;
+    --paper-2:#ece4d0;
+    --vault:#1f5c4a;
+    --vault-dark:#153f33;
+    --brass:#b3873c;
+    --rust:#9c3f2c;
+    --slate:#5c6b62;
+    --line: rgba(22,36,29,0.16);
+  }
+
+  *{box-sizing:border-box;}
+
+  body{
+    margin:0;
+    background:var(--ink);
+    background-image:
+      radial-gradient(circle at 15% 10%, rgba(179,135,60,0.08), transparent 40%),
+      radial-gradient(circle at 85% 90%, rgba(31,92,74,0.15), transparent 45%);
+    color:var(--paper);
+    font-family:'Inter', sans-serif;
+    min-height:100vh;
+    padding:48px 24px 80px;
+  }
+
+  .wrap{
+    max-width:980px;
+    margin:0 auto;
+  }
+
+  header{
+    display:flex;
+    align-items:flex-end;
+    justify-content:space-between;
+    gap:24px;
+    margin-bottom:44px;
+    border-bottom:1px solid rgba(244,239,226,0.15);
+    padding-bottom:24px;
+    flex-wrap:wrap;
+  }
+
+  .brand-eyebrow{
+    font-family:'IBM Plex Mono', monospace;
+    font-size:11px;
+    letter-spacing:0.18em;
+    text-transform:uppercase;
+    color:var(--brass);
+    margin:0 0 8px;
+  }
+
+  h1{
+    font-family:'Fraunces', serif;
+    font-weight:600;
+    font-size:clamp(28px, 4vw, 40px);
+    margin:0;
+    letter-spacing:-0.01em;
+  }
+
+  .tagline{
+    font-size:13px;
+    color:rgba(244,239,226,0.55);
+    max-width:280px;
+    line-height:1.5;
+    text-align:right;
+  }
+
+  .accounts{
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:28px;
+    margin-bottom:36px;
+  }
+
+  @media (max-width:720px){
+    .accounts{ grid-template-columns:1fr; }
+    .tagline{ text-align:left; }
+  }
+
+  .passbook{
+    background:var(--paper);
+    color:var(--ink);
+    border-radius:6px;
+    position:relative;
+    box-shadow:0 24px 48px -20px rgba(0,0,0,0.55);
+    overflow:hidden;
+  }
+
+  .passbook::before{
+    content:"";
+    position:absolute;
+    left:0; top:0; bottom:0;
+    width:22px;
+    background:
+      repeating-linear-gradient(
+        to bottom,
+        var(--ink) 0 6px,
+        transparent 6px 14px
+      );
+    -webkit-mask-image: radial-gradient(circle 5px at 11px 0, transparent 98%, black 100%);
+    mask-image: radial-gradient(circle 5px at 11px 0, transparent 98%, black 100%);
+    opacity:0.08;
+  }
+
+  .passbook-inner{
+    padding:28px 28px 24px 40px;
+  }
+
+  .acct-head{
+    display:flex;
+    justify-content:space-between;
+    align-items:flex-start;
+    margin-bottom:18px;
+  }
+
+  .acct-name{
+    font-family:'Fraunces', serif;
+    font-weight:600;
+    font-size:22px;
+    margin:0 0 2px;
+  }
+
+  .acct-id{
+    font-family:'IBM Plex Mono', monospace;
+    font-size:11px;
+    color:var(--slate);
+    letter-spacing:0.04em;
+  }
+
+  .status-dot{
+    width:8px; height:8px;
+    border-radius:50%;
+    background:var(--vault);
+    box-shadow:0 0 0 3px rgba(31,92,74,0.15);
+    margin-top:6px;
+  }
+
+  .balance-label{
+    font-family:'IBM Plex Mono', monospace;
+    font-size:10px;
+    letter-spacing:0.14em;
+    text-transform:uppercase;
+    color:var(--slate);
+    margin-bottom:4px;
+  }
+
+  .balance-figure{
+    font-family:'Fraunces', serif;
+    font-weight:700;
+    font-size:clamp(30px, 4.5vw, 38px);
+    letter-spacing:-0.02em;
+    line-height:1;
+    margin-bottom:20px;
+    font-variant-numeric: tabular-nums;
+    transition: color 0.3s ease;
+  }
+  .balance-figure.pulse-credit{ animation: flashGreen 0.6s ease; }
+  .balance-figure.pulse-debit{ animation: flashRust 0.6s ease; }
+
+  @keyframes flashGreen{
+    0%{ color:var(--vault); }
+    100%{ color:var(--ink); }
+  }
+  @keyframes flashRust{
+    0%{ color:var(--rust); }
+    100%{ color:var(--ink); }
+  }
+
+  .controls{
+    display:flex;
+    gap:8px;
+    margin-bottom:8px;
+  }
+
+  .amt-input{
+    flex:1;
+    font-family:'IBM Plex Mono', monospace;
+    font-size:14px;
+    padding:10px 12px;
+    border-radius:4px;
+    border:1px solid var(--line);
+    background:var(--paper-2);
+    color:var(--ink);
+    min-width:0;
+  }
+  .amt-input:focus{
+    outline:none;
+    border-color:var(--vault);
+    background:#fff;
+  }
+
+  .btn{
+    font-family:'Inter', sans-serif;
+    font-weight:600;
+    font-size:13px;
+    border:none;
+    border-radius:4px;
+    padding:10px 16px;
+    cursor:pointer;
+    transition: transform 0.12s ease, opacity 0.12s ease;
+    white-space:nowrap;
+  }
+  .btn:active{ transform: scale(0.96); }
+  .btn:disabled{ opacity:0.4; cursor:not-allowed; transform:none; }
+
+  .btn-deposit{ background:var(--vault); color:var(--paper); }
+  .btn-deposit:hover:not(:disabled){ background:var(--vault-dark); }
+
+  .btn-withdraw{ background:transparent; color:var(--rust); border:1px solid var(--rust); }
+  .btn-withdraw:hover:not(:disabled){ background:rgba(156,63,44,0.08); }
+
+  .error-msg{
+    font-family:'IBM Plex Mono', monospace;
+    font-size:11px;
+    color:var(--rust);
+    min-height:16px;
+    margin-top:6px;
+  }
+
+  .ledger{
+    background:var(--paper);
+    color:var(--ink);
+    border-radius:6px;
+    padding:24px 28px;
+    box-shadow:0 24px 48px -20px rgba(0,0,0,0.55);
+  }
+
+  .ledger-head{
+    display:flex;
+    justify-content:space-between;
+    align-items:baseline;
+    margin-bottom:14px;
+    border-bottom:1px solid var(--line);
+    padding-bottom:12px;
+  }
+
+  .ledger-head h2{
+    font-family:'Fraunces', serif;
+    font-size:18px;
+    margin:0;
+    font-weight:600;
+  }
+
+  .ledger-head span{
+    font-family:'IBM Plex Mono', monospace;
+    font-size:10px;
+    color:var(--slate);
+    letter-spacing:0.1em;
+    text-transform:uppercase;
+  }
+
+  .log{
+    font-family:'IBM Plex Mono', monospace;
+    font-size:12.5px;
+    line-height:1.5;
+    max-height:220px;
+    overflow-y:auto;
+  }
+
+  .log-row{
+    display:grid;
+    grid-template-columns:64px 90px 1fr;
+    gap:10px;
+    padding:7px 0;
+    border-bottom:1px dashed var(--line);
+    align-items:center;
+  }
+  .log-row:last-child{ border-bottom:none; }
+
+  .log-tag{
+    font-size:10px;
+    letter-spacing:0.06em;
+    padding:2px 6px;
+    border-radius:3px;
+    text-align:center;
+    text-transform:uppercase;
+    font-weight:600;
+  }
+  .log-tag.credit{ background:rgba(31,92,74,0.14); color:var(--vault-dark); }
+  .log-tag.debit{ background:rgba(156,63,44,0.14); color:var(--rust); }
+  .log-tag.open{ background:rgba(92,107,98,0.16); color:var(--slate); }
+
+  .log-who{ color:var(--slate); }
+
+  .log-empty{
+    color:var(--slate);
+    font-style:italic;
+    padding:12px 0;
+  }
+
+  footer{
+    margin-top:36px;
+    text-align:center;
+    font-family:'IBM Plex Mono', monospace;
+    font-size:11px;
+    color:rgba(244,239,226,0.4);
+    letter-spacing:0.04em;
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <header>
+    <div>
+      <p class="brand-eyebrow">Closures in Practice</p>
+      <h1>Two Passbooks, One Function</h1>
+    </div>
+    <p class="tagline">Each account below is an independent closure over its own <code>Balance</code> variable — deposit, withdraw, and watch the private state update.</p>
+  </header>
+
+  <div class="accounts">
+
+    <!-- User1 -->
+    <div class="passbook">
+      <div class="passbook-inner">
+        <div class="acct-head">
+          <div>
+            <p class="acct-name">User 1</p>
+            <p class="acct-id">A/C · 1000-INIT</p>
+          </div>
+          <div class="status-dot"></div>
+        </div>
+        <p class="balance-label">Current Balance</p>
+        <p class="balance-figure" id="balance-1">Rs. 1,000</p>
+
+        <div class="controls">
+          <input type="number" class="amt-input" id="amount-1" placeholder="Amount" min="0" step="1">
+          <button class="btn btn-deposit" onclick="handleDeposit(1)">Deposit</button>
+          <button class="btn btn-withdraw" onclick="handleWithdraw(1)">Withdraw</button>
+        </div>
+        <p class="error-msg" id="error-1"></p>
+      </div>
+    </div>
+
+    <!-- User2 -->
+    <div class="passbook">
+      <div class="passbook-inner">
+        <div class="acct-head">
+          <div>
+            <p class="acct-name">User 2</p>
+            <p class="acct-id">A/C · 5000-INIT</p>
+          </div>
+          <div class="status-dot"></div>
+        </div>
+        <p class="balance-label">Current Balance</p>
+        <p class="balance-figure" id="balance-2">Rs. 5,000</p>
+
+        <div class="controls">
+          <input type="number" class="amt-input" id="amount-2" placeholder="Amount" min="0" step="1">
+          <button class="btn btn-deposit" onclick="handleDeposit(2)">Deposit</button>
+          <button class="btn btn-withdraw" onclick="handleWithdraw(2)">Withdraw</button>
+        </div>
+        <p class="error-msg" id="error-2"></p>
+      </div>
+    </div>
+
+  </div>
+
+  <div class="ledger">
+    <div class="ledger-head">
+      <h2>Transaction Log</h2>
+      <span>Most recent first</span>
+    </div>
+    <div class="log" id="log">
+      <p class="log-empty">No transactions yet — open a deposit or withdrawal above.</p>
+    </div>
+  </div>
+
+  <footer>console.log output mirrored live · BankAccount(InitialBalance) closure demo</footer>
+
+</div>
+
+<script>
+  // ---- Original closure-based bank account logic (unchanged) ----
+  function BankAccount(InitialBalance) {
+    let Balance = InitialBalance;
+
+    return {
+      Deposit: (amt1) => { Balance += amt1; return `Credited Rs. : ${amt1} | Current Balance : ${Balance}.`; },
+      Withdraw: (amt2) => { Balance -= amt2; return `Debited Rs. : ${amt2} | Current Balance : ${Balance}.`; },
+      GetBalance: () => `Current Balance : ${Balance}.`,
+      _getRaw: () => Balance, // helper for UI formatting only
+    };
+  }
+
+  let User1 = BankAccount(1000);
+  let User2 = BankAccount(5000);
+
+  console.log(User1.GetBalance());
+  console.log(User2.GetBalance());
+
+  // ---- UI wiring ----
+  const accounts = { 1: User1, 2: User2 };
+  const logEl = document.getElementById('log');
+  let logEntries = [];
+  let hasTransacted = false;
+
+  function fmt(n){
+    return 'Rs. ' + Number(n).toLocaleString('en-IN');
+  }
+
+  function refreshBalance(id){
+    document.getElementById(`balance-${id}`).textContent = fmt(accounts[id]._getRaw());
+  }
+
+  function flash(id, type){
+    const el = document.getElementById(`balance-${id}`);
+    el.classList.remove('pulse-credit', 'pulse-debit');
+    void el.offsetWidth; // restart animation
+    el.classList.add(type === 'credit' ? 'pulse-credit' : 'pulse-debit');
+  }
+
+  function addLog(userLabel, tag, text){
+    hasTransacted = true;
+    logEntries.unshift({ userLabel, tag, text, time: new Date().toLocaleTimeString('en-IN', { hour12:false }) });
+    renderLog();
+  }
+
+  function renderLog(){
+    if(!hasTransacted){
+      logEl.innerHTML = '<p class="log-empty">No transactions yet — open a deposit or withdrawal above.</p>';
+      return;
+    }
+    logEl.innerHTML = logEntries.map(e => `
+      <div class="log-row">
+        <span class="log-tag ${e.tag}">${e.tag}</span>
+        <span class="log-who">${e.userLabel}</span>
+        <span>${e.text}</span>
+      </div>
+    `).join('');
+  }
+
+  function showError(id, msg){
+    const err = document.getElementById(`error-${id}`);
+    err.textContent = msg;
+    if(msg) setTimeout(() => { if(err.textContent === msg) err.textContent = ''; }, 2500);
+  }
+
+  function readAmount(id){
+    const input = document.getElementById(`amount-${id}`);
+    const val = parseFloat(input.value);
+    return { input, val };
+  }
+
+  function handleDeposit(id){
+    const { input, val } = readAmount(id);
+    if(!val || val <= 0){ showError(id, 'Enter an amount greater than 0.'); return; }
+    const result = accounts[id].Deposit(val);
+    console.log(result);
+    refreshBalance(id);
+    flash(id, 'credit');
+    addLog(`User ${id}`, 'credit', result);
+    input.value = '';
+  }
+
+  function handleWithdraw(id){
+    const { input, val } = readAmount(id);
+    if(!val || val <= 0){ showError(id, 'Enter an amount greater than 0.'); return; }
+    if(val > accounts[id]._getRaw()){ showError(id, 'Insufficient balance for this withdrawal.'); return; }
+    const result = accounts[id].Withdraw(val);
+    console.log(result);
+    refreshBalance(id);
+    flash(id, 'debit');
+    addLog(`User ${id}`, 'debit', result);
+    input.value = '';
+  }
+
+  // seed opening balances into the log for context
+  addLog('User 1', 'open', `Account opened · ${User1.GetBalance()}`);
+  addLog('User 2', 'open', `Account opened · ${User2.GetBalance()}`);
+  hasTransacted = true;
+  renderLog();
+</script>
+</body>
+</html>

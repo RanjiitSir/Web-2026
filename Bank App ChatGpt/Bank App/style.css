@@ -1,0 +1,253 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: Arial, Helvetica, sans-serif;
+    background: #f4f6f9;
+    color: #1f2937;
+    min-height: 100vh;
+}
+
+.header {
+    background: #111827;
+    color: white;
+    padding: 28px 6%;
+}
+
+.header h1 {
+    font-size: 28px;
+    margin-bottom: 6px;
+}
+
+.header p {
+    color: #9ca3af;
+    font-size: 14px;
+}
+
+.container {
+    width: 90%;
+    max-width: 1200px;
+    margin: 40px auto;
+}
+
+.accounts {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 25px;
+}
+
+.account-card {
+    background: white;
+    border-radius: 16px;
+    padding: 28px;
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.07);
+}
+
+.account-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 30px;
+}
+
+.account-label {
+    font-size: 11px;
+    color: #6b7280;
+    font-weight: bold;
+    letter-spacing: 1px;
+}
+
+.account-header h2 {
+    margin-top: 5px;
+    font-size: 22px;
+}
+
+.account-icon {
+    width: 50px;
+    height: 50px;
+    background: #111827;
+    color: white;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 22px;
+    font-weight: bold;
+}
+
+.balance-section {
+    background: #f8fafc;
+    border-radius: 12px;
+    padding: 20px;
+    margin-bottom: 25px;
+}
+
+.balance-section span {
+    font-size: 13px;
+    color: #6b7280;
+}
+
+.balance-section h3 {
+    margin-top: 8px;
+    font-size: 30px;
+    color: #111827;
+}
+
+.input-group {
+    margin-bottom: 15px;
+}
+
+.input-group label {
+    display: block;
+    font-size: 13px;
+    font-weight: bold;
+    margin-bottom: 7px;
+}
+
+.input-group input {
+    width: 100%;
+    padding: 12px 14px;
+    border: 1px solid #d1d5db;
+    border-radius: 8px;
+    font-size: 15px;
+    outline: none;
+}
+
+.input-group input:focus {
+    border-color: #111827;
+}
+
+.button-group {
+    display: flex;
+    gap: 10px;
+}
+
+.btn {
+    flex: 1;
+    padding: 12px;
+    border: none;
+    border-radius: 8px;
+    color: white;
+    font-size: 14px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: 0.2s;
+}
+
+.btn:hover {
+    transform: translateY(-1px);
+}
+
+.deposit { background: #16a34a; }
+.deposit:hover { background: #15803d; }
+
+.withdraw { background: #dc2626; }
+.withdraw:hover { background: #b91c1c; }
+
+.message {
+    margin-top: 25px;
+    padding: 15px 18px;
+    border-radius: 8px;
+    font-size: 14px;
+    font-weight: bold;
+}
+
+.message.success {
+    background: #dcfce7;
+    color: #166534;
+}
+
+.message.error {
+    background: #fee2e2;
+    color: #991b1b;
+}
+
+.hidden {
+    display: none;
+}
+
+.transactions {
+    margin-top: 35px;
+    background: white;
+    padding: 28px;
+    border-radius: 16px;
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.07);
+}
+
+.section-title {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+}
+
+.section-title h2 { font-size: 20px; }
+.section-title p {
+    margin-top: 5px;
+    color: #6b7280;
+    font-size: 13px;
+}
+
+.clear-btn {
+    border: 1px solid #d1d5db;
+    background: white;
+    padding: 9px 14px;
+    border-radius: 7px;
+    cursor: pointer;
+}
+
+.clear-btn:hover { background: #f3f4f6; }
+
+.table-wrapper { overflow-x: auto; }
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+thead { background: #f9fafb; }
+
+th, td {
+    padding: 14px;
+    text-align: left;
+    border-bottom: 1px solid #e5e7eb;
+    font-size: 14px;
+}
+
+th {
+    color: #6b7280;
+    font-size: 12px;
+    text-transform: uppercase;
+}
+
+.credit {
+    color: #16a34a;
+    font-weight: bold;
+}
+
+.debit {
+    color: #dc2626;
+    font-weight: bold;
+}
+
+footer {
+    text-align: center;
+    padding: 25px;
+    color: #6b7280;
+    font-size: 13px;
+}
+
+@media (max-width: 768px) {
+    .accounts { grid-template-columns: 1fr; }
+    .container { width: 94%; margin: 25px auto; }
+    .header { padding: 22px 4%; }
+    .button-group { flex-direction: column; }
+    .section-title {
+        align-items: flex-start;
+        gap: 15px;
+        flex-direction: column;
+    }
+}
