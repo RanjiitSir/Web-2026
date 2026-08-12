@@ -1,0 +1,355 @@
+let fruits = ["Apple", "Mango", "Banana", "Orange"];
+
+for (let i = 0; i < fruits.length; i++) 
+{
+    console.log(i, fruits[i]);
+}
+/////////////////////////////////
+
+let fruits = ["Apple", "Mango", "Banana", "Orange", "Grapes"];
+
+for (let fruit of fruits) 
+{
+	console.log(fruit);
+}
+
+//////////////////////////////
+
+let Std = { name: "Aarav", age: 20, marks: 88 };
+
+for (let key in Std) 
+{
+	console.log(key, ":", Std[key]);
+}
+
+///////////////////////////////////////////
+
+let Std = [
+			  { Name: "Aarav", M1: 75, M2: 88, M3 : 57, Per : 87.546 },
+			  { Name: "Harry", M1: 46, M2: 95, M3 : 57, Per : 84.541 },
+			  { Name: "Madhav", M1: 96, M2: 85, M3 : 77, Per : 96.582 }
+		  ];
+
+for (let s of Std)
+{
+	for (let key in s) 
+	{
+		console.log(key, ":", s[key]);
+	}
+}
+
+////////////////////////////////////////////
+
+function DisplayName(Name) 
+{
+    return "Hello, " + Name + "!";
+}
+
+let message = DisplayName("Fork Infosystems");
+console.log(message); 
+
+///////////////////////////////////////////
+
+function Add(N1, N2) 
+{
+	return N1 + N2;
+}
+
+console.log(Add(10, 25));
+
+///////////////////////////////////////////
+
+function showInfo(Uname, MNo) 
+{
+	console.log(`User Name: ${Uname} | Mobile No: ${MNo}`);
+}
+
+showInfo("Ranjit Sir", "9172135355");
+
+//////////////////////////////////////////
+
+sayHello(); // Works!
+
+function sayHello() 
+{
+	console.log("Hello from ForkInfosystems!");
+}
+
+//////////////////////////////////////////
+
+const DisplayUName = function(Uname) 
+{
+	return `Hello, ${Uname}!`;
+};
+
+console.log(DisplayUName("Harry Potter"));
+
+/////////////////////////////////////////
+
+const factorial = function fact(n) 
+{
+	if (n <= 1)
+	{
+		return 1;
+	}	
+		
+	return n * fact(n - 1);
+};
+
+console.log(factorial(5));
+
+///////////////////////////////////////////////
+const add1 = (a, b) => { return a + b; };	// Full Arrow
+
+console.log(add1(15, 25));
+
+///////////////////////////////////////////////
+
+const add2 = (a, b) => a + b; // implicit return (no braces)
+
+console.log(add2(15, 25));
+
+///////////////////////////////////////////////
+
+const Square = n => n * n; // single param — no brackets needed
+
+console.log(Square(7));
+
+///////////////////////////////////////////////
+
+const Message = () => "Hello!";
+
+console.log(Message());
+
+///////////////////////////////////////////////
+
+const isEven = n => n % 2 === 0;
+
+console.log(isEven(4));
+
+///////////////////////////////////////////////
+
+const isEvenorOdd = n => (n % 2 === 0)?"EVEN":"ODD";
+
+console.log(isEvenorOdd(4));
+
+
+//////////////////////////////////////////////
+
+let numbers = [1, 2, 3, 4, 5];
+
+let doubled = numbers.map(n => n * 2);
+
+console.log(doubled);
+
+/////////////////////////////////////////////
+
+const obj = 
+		{
+			name: "Fork Infosystems, Karad.",
+			regular: function() { console.log(this.name); },
+			arrow: () => { console.log(this.name); },
+		};
+
+obj.regular();		/// Allowed
+obj.arrow();		/// Undefined that is not Allowed 
+
+////////////////////////////////////////////
+
+//////////////// Without default — missing args become undefined
+
+function greet(name, greeting) 
+{
+	return `${greeting}, ${name}!`;
+}
+console.log(greet("Aarav"));
+
+/////////////////////////////////////////
+
+function Display(Uname, Message) 
+{
+	return `${Message}, ${Uname}!`;
+}
+console.log(Display("Harry"));
+
+////////////////////////////////////////
+
+function Display(Uname = "User", Message = "Welcome") 
+{
+	return `${Message}, ${Uname}!`;
+}
+console.log(Display("Harry"));				// "Welcome, Harry!"
+
+console.log(Display("Priya", "Namaste"));   // "Namaste, Priya!"
+
+console.log(Display());						// "Welcome, User!"
+
+////////////////////// Default can be an expression
+
+function createUser(name, role = "Student", id = Date.now()) 
+{
+	return { name, role, id };
+}
+
+console.log(createUser());
+console.log(createUser("Harry", "Admin", 101 ));
+
+////////////////////////////////////////////////
+
+function createUser(name, id = Date.now(),  role = "Student") 
+{
+	return { name, role, id };
+}
+
+console.log(createUser());
+console.log(createUser("Harry", 101, "Admin" ));
+console.log(createUser("Jack", 205));
+
+
+///////////////////////////////////////////
+
+
+function fAdd(...Marks) 
+{
+	return Marks.reduce((Tot, n) => Tot + n, 0);
+}
+
+console.log(fAdd(1, 2, 3)); // 6
+console.log(fAdd(10, 20, 30, 40)); // 100
+
+///////////////////////////////////////////
+
+function UserDetails(first, last, ...hobbies) 
+{
+	console.log(`${first} ${last} likes: ${hobbies.join(" ! ")}`);
+}
+
+UserDetails("Harry", "Potter", "Coding", "Gaming", "Cricket", "Reading");
+
+///////////////////////////////////////////
+
+let arr1 = [1, 2, 3];
+let arr2 = [4, 5, 6];
+
+let fCombo = [...arr1, ...arr2]; // [1, 2, 3, 4, 5, 6]
+let fCopy = [...arr1]; // create a copy
+
+console.log(fCombo);
+console.log(fCopy);
+
+//////////////////////////////////////
+
+
+let arr1 = [1, 2, 3];
+let arr2 = ["ABC", "PQR", "XYZ", "LMN"];
+
+let fCombo = [...arr1, ...arr2]; // [1, 2, 3, 'ABC', 'PQR', 'XYZ', 'LMN']
+
+console.log(fCombo);
+
+
+////////////////////////////////////
+
+let gMessage = "HEllo Programmer";
+
+function DisplayAll() 
+{
+	let lMessage = "Start Coding";
+	
+	function LocalDisplay() 
+	{
+		console.log(gMessage); // OK — access outer scope
+		console.log(lMessage); // OK — access parent scope
+	}
+	
+	LocalDisplay();
+}
+
+DisplayAll();
+
+
+///////////////////////////////////////////
+
+function makeCounter() 
+{
+	let Cnt = 0; // This variable is 'closed over'
+	
+	return function() 
+	{
+		Cnt += 100;
+		return Cnt;
+	};
+}
+
+let FCounter1 = makeCounter();  //// Expression
+let FCounter2 = makeCounter();  //// Expression
+
+console.log(FCounter1()); // 100
+console.log(FCounter1()); // 200
+
+console.log(FCounter2()); // 100
+
+console.log(FCounter1()); // 300
+console.log(FCounter1()); // 400
+console.log(FCounter1()); // 500
+console.log(FCounter1()); // 600
+
+console.log(FCounter2()); // 200
+console.log(FCounter2()); // 300
+console.log(FCounter2()); // 400
+
+console.log(FCounter1()); // 700
+console.log(FCounter1()); // 800
+
+//////////////////////////////////////////////////////
+
+
+function BankAccount(InitialBalance) 
+{
+	let Balance = InitialBalance;
+	
+	return {
+		Deposit: (amt1) => { Balance += amt1; return Balance; },
+		Withdraw: (amt2) => { Balance -= amt2; return Balance; },
+		GetBalance: () => Balance,
+	};
+}
+
+let User1 = BankAccount(1000);
+let User2 = BankAccount(5000);
+
+console.log(User1.GetBalance()); // 1000
+console.log(User2.GetBalance()); // 5000
+
+console.log(User1.Deposit(500)); // 1500
+console.log(User2.Withdraw(1200)); // 3800
+
+console.log(User1.GetBalance()); // 1500
+console.log(User2.GetBalance()); // 3800
+
+//////////////////////////////////////////////////////////////
+
+
+function BankAccount(InitialBalance) 
+{
+	let Balance = InitialBalance;
+	
+	return {
+		Deposit: (amt1) => { Balance += amt1; return `Credited Rs. : ${amt1} | Current Balance : ${Balance}.`; },
+		Withdraw: (amt2) => { Balance -= amt2; return `Debited Rs. : ${amt2} | Current Balance : ${Balance}.`; },
+		GetBalance: () => `Current Balance : ${Balance}.`,
+	};
+}
+
+let User1 = BankAccount(1000);
+let User2 = BankAccount(5000);
+
+console.log(User1.GetBalance());
+console.log(User2.GetBalance());
+
+console.log(User1.Deposit(500));
+console.log(User2.Withdraw(1200));
+
+console.log(User1.GetBalance());
+console.log(User2.GetBalance());
+
